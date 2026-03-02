@@ -1,21 +1,35 @@
 :root {
-    --bg-primary: #111827;
-    --bg-secondary: #1F2937;
-    --bg-elevated: #374151;
-    --text-primary: #F9FAFB;
-    --text-secondary: #9CA3AF;
-    --accent: #3B82F6;
-    --accent-hover: #2563EB;
+    --bg-primary: #F8FAFC;
+    --bg-secondary: #FFFFFF;
+    --bg-elevated: rgba(255, 255, 255, 0.85);
+    --text-primary: #0F172A;
+    --text-secondary: #64748B;
+    --accent: #0D9488;
+    /* Teal */
+    --accent-blue: #3B82F6;
+    /* Blue accent for Logo and buttons */
+    --accent-hover: #0F766E;
+    --accent-light: rgba(13, 148, 136, 0.1);
     --success: #10B981;
-    --border: #374151;
+    --error: #EF4444;
+    --border: rgba(13, 148, 136, 0.15);
+    /* Subtle teal border */
+    --border-light: #F1F5F9;
 }
 
 body {
     margin: 0;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: var(--bg-primary);
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
+    /* Layered pearlescent gradient background */
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 40%, #E2E8F0 100%);
+    background-image:
+        radial-gradient(circle at 100% 0%, rgba(13, 148, 136, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 0% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+        linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 40%, #E2E8F0 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
 }
 
 * {
@@ -37,10 +51,17 @@ button {
     font-family: inherit;
     border: none;
     background: none;
+    transition: all 0.2s;
 }
 
 input[type="file"] {
     display: none;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px var(--accent-light) !important;
 }
 
 @keyframes spin {
@@ -55,4 +76,46 @@ input[type="file"] {
 
 .animate-spin {
     animation: spin 1s linear infinite;
+}
+
+/* Custom styles for Aura Finance */
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.nav-link:hover {
+    color: var(--text-primary);
+}
+
+.nav-link.active {
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--accent);
+}
+
+.card {
+    background-color: var(--bg-elevated);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+.badge {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: monospace;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) inset;
 }
