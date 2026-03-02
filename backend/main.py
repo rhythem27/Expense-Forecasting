@@ -4,6 +4,11 @@ import uuid
 
 from backend.services import process_and_insert_expenses
 from backend.forecasting import calculate_metrics
+from pydantic import BaseModel
+
+class Scenario(BaseModel):
+    marketing_increase_pct: float = 0.0
+    new_employee_cost: float = 0.0
 
 app = FastAPI(title="Expense Forecasting API", description="Data Ingestion API Backend")
 
@@ -65,6 +70,22 @@ def get_forecast(company_id: str):
         )
         
     result = calculate_metrics(company_id)
+    return result
+
+@app.post("/simulate/{company_id}")
+def simulate_forecast(company_id: str, scenario: Scenario):
+    """
+    Endpoint to recalculate the runway and forecasting data with hypothetical scenarios.
+    """
+    try:
+        uuid_obj = uuid.UUID(company_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=400, 
+            detail="Invalid company_id format. Must be a valid UUID."
+        )
+        
+    result = calculate_metrics(company_id, scenario=scenario)
     return result
 
 @app.get("/")

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import FileUpload from './FileUpload';
 import Metrics from './Metrics';
 import CashFlowChart from './CashFlowChart';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertTriangle } from 'lucide-react';
+import ScenarioSimulator from './ScenarioSimulator';
 
 const Dashboard = () => {
     const [metrics, setMetrics] = useState(null);
@@ -32,6 +33,27 @@ const Dashboard = () => {
     useEffect(() => {
         fetchMetrics(currentCompanyId);
     }, [currentCompanyId]);
+
+    const simulateMetrics = async (scenarioParams) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(`http://localhost:8000/simulate/${currentCompanyId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(scenarioParams)
+            });
+            if (!res.ok) {
+                throw new Error('Failed to run simulation. Ensure the company exists and has data.');
+            }
+            const data = await res.json();
+            setMetrics(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -63,7 +85,17 @@ const Dashboard = () => {
                     </div>
                 ) : metrics ? (
                     <>
+                        {metrics.out_of_cash_alert && (
+                            <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.5)', padding: '16px 20px', borderRadius: '12px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                <AlertTriangle color="#EF4444" size={28} />
+                                <div>
+                                    <h3 style={{ color: '#EF4444', margin: 0, fontSize: '18px', fontWeight: '600' }}>Out of Cash Alert</h3>
+                                    <p style={{ color: '#EF4444', margin: '4px 0 0', fontSize: '15px' }}>Projected run-out date: <span style={{ fontWeight: '600' }}>{metrics.out_of_cash_date}</span></p>
+                                </div>
+                            </div>
+                        )}
                         <Metrics metrics={metrics} />
+                        <ScenarioSimulator onSimulate={simulateMetrics} />
                         <CashFlowChart metrics={metrics} />
                     </>
                 ) : null}
