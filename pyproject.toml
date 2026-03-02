@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "expense-forecasting"
+version = "0.1.0"
+description = "Expense Forecasting web app for small businesses"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "*"
+uvicorn = "*"
+pandas = "*"
+supabase = "*"
+python-dotenv = "*"
+python-multipart = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
