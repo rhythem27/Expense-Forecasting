@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uuid
 
 from backend.services import process_and_insert_expenses
+from backend.forecasting import calculate_metrics
 
 app = FastAPI(title="Expense Forecasting API", description="Data Ingestion API Backend")
 
@@ -49,6 +50,22 @@ async def upload_expenses(
         "message": "Expenses successfully parsed and inserted.",
         "details": result
     }
+
+@app.get("/forecast/{company_id}")
+def get_forecast(company_id: str):
+    """
+    Endpoint to retrieve the company's financial metrics including burn rate, runway, and cash flow forecast.
+    """
+    try:
+        uuid_obj = uuid.UUID(company_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=400, 
+            detail="Invalid company_id format. Must be a valid UUID."
+        )
+        
+    result = calculate_metrics(company_id)
+    return result
 
 @app.get("/")
 def read_root():
